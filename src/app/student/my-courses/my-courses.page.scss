@@ -1,0 +1,53 @@
+.banner {
+  width: 100%;
+  display: block;
+}
+
+.section {
+  padding: 0 1rem;
+  margin-top: 1.25rem;
+
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+}
+
+.pct {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin: 0.35rem 0 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+ion-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+
+  small {
+    color: var(--ion-color-medium);
+  }
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--ion-color-medium);
+}

@@ -1,0 +1,157 @@
+/*
+ * GP Design System — "Graphite & Linen" (variáveis)
+ * -----------------------------------------------------------------------------
+ * Cópia dos tokens de frontend/public/design-system/tokens.css (só variáveis; as
+ * classes .ds-* são do frontend web e não são usadas aqui). Ao mudar o design
+ * system, atualize este arquivo a partir do original.
+ * Diferença: o tema escuro vem da classe .ion-palette-dark (ThemeService do app).
+ * A fonte Satoshi não vem no repositório (licença): ver src/assets/fonts/LEIA-ME.md.
+ */
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---------------------------------------------------------------------------
+     Primitivos — grafite quente. Nunca usar direto em tela: use os semânticos.
+     --------------------------------------------------------------------------- */
+  --ds-graphite-950: #141312;
+  --ds-graphite-900: #1c1b1a;
+  --ds-graphite-850: #232220;
+  --ds-graphite-800: #2b2927;
+  --ds-graphite-700: #3a3835;
+  --ds-graphite-600: #4b4844;
+  --ds-graphite-500: #6b6762;
+  --ds-graphite-400: #8e8a84;
+  --ds-graphite-300: #b3afa9;
+  --ds-graphite-200: #d9d7d3;
+  --ds-graphite-150: #e8e7e4;
+  --ds-graphite-100: #efeeeb;
+  --ds-graphite-50: #f4f4f2;
+  --ds-white: #ffffff;
+
+  /* ---------------------------------------------------------------------------
+     Tipografia
+     --------------------------------------------------------------------------- */
+  --ds-font-sans: "Satoshi", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ds-font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", monospace;
+
+  /* ---------------------------------------------------------------------------
+     Raios — regra concêntrica: raio interno = raio externo − espaçamento.
+     --------------------------------------------------------------------------- */
+  --ds-radius-xs: 8px;
+  --ds-radius-sm: 12px;
+  --ds-radius-md: 16px;
+  --ds-radius-lg: 20px;
+  --ds-radius-xl: 24px;
+  --ds-radius-2xl: 28px;
+  --ds-radius-3xl: 36px;
+  --ds-radius-pill: 999px;
+
+  /* ---------------------------------------------------------------------------
+     Motion
+     --------------------------------------------------------------------------- */
+  --ds-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ds-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ds-dur-fast: 120ms;
+  --ds-dur: 200ms;
+  --ds-dur-slow: 320ms;
+
+  /* ---------------------------------------------------------------------------
+     Semânticos — tema claro (padrão)
+     --------------------------------------------------------------------------- */
+  --ds-bg: var(--ds-graphite-50);
+  --ds-surface: var(--ds-white);
+  --ds-sunken: var(--ds-graphite-100);
+  --ds-border: var(--ds-graphite-150);
+  --ds-border-strong: var(--ds-graphite-200);
+  --ds-divider: var(--ds-graphite-100);
+
+  --ds-fg: #1a1918;            /* 17.4:1 no surface */
+  --ds-fg-2: var(--ds-graphite-500); /* 5.7:1 — texto secundário */
+  --ds-fg-3: var(--ds-graphite-400); /* 3.4:1 — só texto grande ou decorativo */
+
+  /* Moldura escura (sidebar/app shell) e texto sobre metal: iguais nos dois temas. */
+  --ds-frame: var(--ds-graphite-900);
+  --ds-on-metal: #f4f2ef;
+  --ds-on-metal-2: #a9a49e;
+
+  --ds-ring: var(--ds-graphite-500);
+  --ds-accent: #b08d57; /* champanhe — único acento, uso mínimo. Tenants trocam aqui. */
+
+  --ds-success: #2f7a58;
+  --ds-success-soft: #e6f1eb;
+  --ds-danger: #b4403a;
+  --ds-danger-soft: #f8e8e6;
+  --ds-warning: #93660f;
+  --ds-warning-soft: #f6eedb;
+  --ds-info: #3a64a8;
+  --ds-info-soft: #e7edf7;
+
+  /* ---------------------------------------------------------------------------
+     Gradientes metalizados — a assinatura do sistema.
+     Todo metal = base linear escura + brilho radial vindo de cima.
+     --------------------------------------------------------------------------- */
+  --ds-metal-graphite:
+    radial-gradient(120% 120% at 50% -30%, rgb(255 255 255 / 0.2) 0%, rgb(255 255 255 / 0) 55%),
+    linear-gradient(180deg, #4b4844 0%, #34322f 55%, #2a2826 100%);
+  --ds-metal-panel:
+    radial-gradient(90% 55% at 18% 0%, rgb(255 255 255 / 0.1) 0%, rgb(255 255 255 / 0) 70%),
+    linear-gradient(180deg, #2c2a28 0%, #232120 100%);
+  --ds-metal-pill: linear-gradient(90deg, rgb(255 255 255 / 0.2) 0%, rgb(255 255 255 / 0.07) 55%, rgb(255 255 255 / 0) 100%);
+  --ds-metal-well: radial-gradient(110% 110% at 30% 15%, #4a4744 0%, #33312e 75%);
+  --ds-metal-well-active: radial-gradient(110% 110% at 30% 15%, #aba59e 0%, #77716b 80%);
+  --ds-metal-rim: linear-gradient(180deg, rgb(255 255 255 / 0.2) 0%, rgb(255 255 255 / 0.03) 45%, rgb(255 255 255 / 0.07) 100%);
+  --ds-metal-pearl: linear-gradient(180deg, #ffffff 0%, #f3f2ef 100%);
+
+  /* ---------------------------------------------------------------------------
+     Sombras — sempre em tom de grafite, nunca preto puro.
+     --------------------------------------------------------------------------- */
+  --ds-shadow-xs: 0 1px 2px rgb(20 19 18 / 0.05);
+  --ds-shadow-sm: 0 1px 2px rgb(20 19 18 / 0.04), 0 4px 12px -4px rgb(20 19 18 / 0.07);
+  --ds-shadow-md: 0 1px 2px rgb(20 19 18 / 0.05), 0 14px 32px -14px rgb(20 19 18 / 0.2);
+  --ds-shadow-lg: 0 2px 4px rgb(20 19 18 / 0.06), 0 28px 56px -20px rgb(20 19 18 / 0.32);
+  --ds-highlight: inset 0 1px 0 rgb(255 255 255 / 0.1);
+  --ds-highlight-strong: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 -1px 0 rgb(0 0 0 / 0.22);
+}
+
+/* Tema escuro: `.ds-theme.dark` (toggle local) ou `.dark .ds-theme` (global). */
+.ion-palette-dark {
+  --ds-bg: var(--ds-graphite-950);
+  --ds-surface: #1e1d1b;
+  --ds-sunken: #262422;
+  --ds-border: #2e2c29;
+  --ds-border-strong: #37342f;
+  --ds-divider: #282624;
+
+  --ds-fg: #f2f0ec;
+  --ds-fg-2: #a9a49e;
+  --ds-fg-3: #7d7973;
+
+  --ds-frame: #0e0d0c;
+  --ds-ring: #a9a49e;
+
+  --ds-success: #6cc59a;
+  --ds-success-soft: rgb(108 197 154 / 0.12);
+  --ds-danger: #e0837b;
+  --ds-danger-soft: rgb(224 131 123 / 0.12);
+  --ds-warning: #d9b25e;
+  --ds-warning-soft: rgb(217 178 94 / 0.12);
+  --ds-info: #86a8e0;
+  --ds-info-soft: rgb(134 168 224 / 0.12);
+
+  --ds-metal-graphite:
+    radial-gradient(120% 120% at 50% -30%, rgb(255 255 255 / 0.22) 0%, rgb(255 255 255 / 0) 55%),
+    linear-gradient(180deg, #5a5651 0%, #3e3b38 55%, #312f2c 100%);
+  --ds-metal-pearl: linear-gradient(180deg, #262422 0%, #1e1d1b 100%);
+
+  --ds-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.3);
+  --ds-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px -4px rgb(0 0 0 / 0.4);
+  --ds-shadow-md: 0 1px 2px rgb(0 0 0 / 0.3), 0 14px 32px -14px rgb(0 0 0 / 0.6);
+  --ds-shadow-lg: 0 2px 4px rgb(0 0 0 / 0.3), 0 28px 56px -20px rgb(0 0 0 / 0.7);
+}

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "855281869574",
+    "project_id": "gpschool-b04b4",
+    "storage_bucket": "gpschool-b04b4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855281869574:android:2344b0fc0cefa9817c7487",
+        "android_client_info": {
+          "package_name": "br.com.godprovider.escola"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "855281869574-aju639p0f05gdfi2hiskrmi1gsh1nrrt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLhJM2Hnb4betZXbFa1rOI0ZhM_BfznMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "855281869574-aju639p0f05gdfi2hiskrmi1gsh1nrrt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

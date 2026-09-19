@@ -1,0 +1,81 @@
+<ion-content class="auth-content" [fullscreen]="true">
+  <div class="auth-wrap">
+    <div class="brand">
+      <img class="brand-mark" src="assets/icon/brand-mark.svg" alt="GPschool" />
+      <h1>Criar conta</h1>
+      <p>Comece a estudar na GPschool</p>
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <ion-item fill="outline" class="field">
+        <ion-input
+          label="Nome completo"
+          labelPlacement="floating"
+          autocomplete="name"
+          [(ngModel)]="name"
+          name="name"
+          required
+        ></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline" class="field">
+        <ion-input
+          label="E-mail"
+          labelPlacement="floating"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          [(ngModel)]="email"
+          name="email"
+          required
+        ></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline" class="field">
+        <ion-input
+          label="Telefone (opcional)"
+          labelPlacement="floating"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          [(ngModel)]="phone"
+          name="phone"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item fill="outline" class="field">
+        <ion-input
+          label="Senha"
+          labelPlacement="floating"
+          type="password"
+          autocomplete="new-password"
+          [(ngModel)]="password"
+          name="password"
+          required
+        ></ion-input>
+      </ion-item>
+
+      @if (errorMessage()) {
+        <ion-text color="danger">
+          <p class="error">{{ errorMessage() }}</p>
+        </ion-text>
+      }
+
+      <ion-button expand="block" type="submit" [disabled]="loading() || !name || !email || !password">
+        @if (loading()) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          Criar conta
+        }
+      </ion-button>
+    </form>
+
+    <!-- Login com Google suspenso por enquanto. Para reativar: descomente esta linha e o import em register.page.ts
+    <app-google-button></app-google-button>
+    -->
+
+    <p class="register-link">
+      Já tem conta? <a routerLink="/auth/login">Entrar</a>
+    </p>
+  </div>
+</ion-content>

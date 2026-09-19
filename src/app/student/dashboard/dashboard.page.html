@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Olá, {{ greetingName }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="load($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (studentBannerUrl()) {
+    <img class="banner" [src]="studentBannerUrl()" alt="" />
+  }
+
+  @if (loading()) {
+    <div class="section">
+      <ion-skeleton-text [animated]="true" style="height: 140px; border-radius: 12px"></ion-skeleton-text>
+    </div>
+  } @else {
+    @if (currentCourse; as view) {
+      <div class="section">
+        <h2>Continuar estudando</h2>
+        <ion-card class="hero" button (click)="openModule(view)">
+          <ion-card-header>
+            <ion-card-title>{{ view.course.title }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>{{ view.module.title }} — {{ teacherName(view.course) }}</p>
+            <ion-progress-bar [value]="view.progress.percentage / 100"></ion-progress-bar>
+            <p class="pct">{{ view.progress.percentage }}% concluído</p>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    }
+
+    @if (inProgress().length) {
+      <div class="section">
+        <h2>Em andamento</h2>
+        @for (view of inProgress(); track view.module.id) {
+          <ion-card button (click)="openModule(view)">
+            <ion-card-content class="row">
+              <ion-avatar [style.background]="'#5b6bf5'">
+                <span>{{ initial(view.course.title) }}</span>
+              </ion-avatar>
+              <div class="info">
+                <strong>{{ view.course.title }}</strong>
+                <small>{{ view.module.title }}</small>
+                <ion-progress-bar [value]="view.progress.percentage / 100"></ion-progress-bar>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+    }
+
+    @if (completed().length) {
+      <div class="section">
+        <h2>Concluídos</h2>
+        @for (view of completed(); track view.module.id) {
+          <ion-card button (click)="openModule(view)">
+            <ion-card-content class="row">
+              <ion-avatar [style.background]="'#26a69a'">
+                <span>{{ initial(view.course.title) }}</span>
+              </ion-avatar>
+              <div class="info">
+                <strong>{{ view.course.title }}</strong>
+                <small>{{ view.module.title }}</small>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+    }
+
+    @if (recommended().length) {
+      <div class="section">
+        <h2>Explorar cursos</h2>
+        @for (rec of recommended(); track rec.course.id) {
+          <ion-card button [routerLink]="['/student/cursos', rec.course.id]">
+            <ion-card-content class="row">
+              <ion-avatar [style.background]="'#ef6c9c'">
+                <span>{{ initial(rec.course.title) }}</span>
+              </ion-avatar>
+              <div class="info">
+                <strong>{{ rec.course.title }}</strong>
+                <small>{{ rec.priceLabel }}</small>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        }
+      </div>
+    }
+
+    @if (!inProgress().length && !completed().length) {
+      <div class="empty">
+        <p>Você ainda não está matriculado em nenhum curso.</p>
+        <ion-button [routerLink]="['/student/meus-cursos']">Explorar cursos</ion-button>
+      </div>
+    }
+  }
+</ion-content>

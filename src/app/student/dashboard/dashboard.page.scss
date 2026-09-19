@@ -1,0 +1,77 @@
+.banner {
+  width: 100%;
+  display: block;
+}
+
+.section {
+  padding: 0 1rem;
+  margin-top: 1.25rem;
+
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+}
+
+.pct {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin: 0.35rem 0 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+ion-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+
+  small {
+    color: var(--ion-color-medium);
+  }
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--ion-color-medium);
+}
+
+/* Cartão em destaque: metal grafite (equivalente ao .ds-card-metal do frontend). */
+ion-card.hero {
+  --background: transparent;
+  --color: var(--ds-on-metal);
+  background: var(--ds-metal-graphite);
+  color: var(--ds-on-metal);
+  border: 0;
+  border-radius: var(--ds-radius-2xl);
+  box-shadow: var(--ds-shadow-md), var(--ds-highlight-strong);
+
+  ion-card-title {
+    color: var(--ds-on-metal);
+  }
+
+  p {
+    color: var(--ds-on-metal-2);
+  }
+
+  ion-progress-bar {
+    --background: rgb(255 255 255 / 0.16);
+    --progress-background: #f4f2ef;
+  }
+}

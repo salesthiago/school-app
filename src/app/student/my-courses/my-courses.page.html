@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Meus Cursos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="load($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (inProgress().length) {
+    <div class="section">
+      <h2>Em andamento</h2>
+      @for (view of inProgress(); track view.key) {
+        <ion-card button (click)="open(view)">
+          <ion-card-content class="row">
+            <ion-avatar [style.background]="'#5b6bf5'">
+              <span>{{ initial(view.course.title) }}</span>
+            </ion-avatar>
+            <div class="info">
+              <strong>{{ view.course.title }}</strong>
+              <small>{{ view.subtitle }}</small>
+              <ion-progress-bar [value]="view.progress.percentage / 100"></ion-progress-bar>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  }
+
+  @if (completed().length) {
+    <div class="section">
+      <h2>Concluídos</h2>
+      @for (view of completed(); track view.key) {
+        <ion-card button (click)="open(view)">
+          <ion-card-content class="row">
+            <ion-avatar [style.background]="'#26a69a'">
+              <span>{{ initial(view.course.title) }}</span>
+            </ion-avatar>
+            <div class="info">
+              <strong>{{ view.course.title }}</strong>
+              <small>{{ view.subtitle }}</small>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  }
+
+  @if (!loading() && !inProgress().length && !completed().length) {
+    <div class="empty">
+      <p>Você ainda não tem cursos. Explore o catálogo pelo Início.</p>
+    </div>
+  }
+</ion-content>

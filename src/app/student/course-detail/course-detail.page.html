@@ -1,0 +1,267 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/student/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ course()?.title ?? 'Curso' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (loading()) {
+    <div class="centered"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (notFound()) {
+    <div class="centered"><p>Curso não encontrado.</p></div>
+  } @else if (course(); as c) {
+    @if (c.coverImageUrl) {
+      <img class="cover" [src]="c.coverImageUrl" alt="" />
+    }
+
+    <div class="body">
+      <h1>{{ c.title }}</h1>
+      <p class="teacher">{{ teacherName() }}</p>
+
+      @if (c.description) {
+        <div class="description" [innerHTML]="safeHtml(c.description)"></div>
+      }
+
+      @if (courseTrackHasLessons()) {
+        <div class="track-enroll">
+          @switch (courseTrackState()) {
+            @case ('enrolled') {
+              <ion-button expand="block" (click)="continueCourseTrack()">Continuar</ion-button>
+            }
+            @case ('free') {
+              <ion-button expand="block" [disabled]="enrollingCourseTrack()" (click)="enrollFreeCourseTrack()">
+                @if (enrollingCourseTrack()) {
+                  <ion-spinner name="crescent"></ion-spinner>
+                } @else {
+                  Me Inscrever
+                }
+              </ion-button>
+            }
+            @case ('paid') {
+              <ion-button expand="block" (click)="openCourseTrackCheckout()">
+                Comprar — {{ courseTrackPriceLabel() }}
+              </ion-button>
+            }
+          }
+        </div>
+      }
+
+      @if (moduleViews().length) {
+        <h2>Módulos</h2>
+      }
+      @for (view of moduleViews(); track view.module.id) {
+        <ion-card>
+          <ion-card-content class="module-row">
+            <div class="module-info">
+              <strong>{{ view.module.title }}</strong>
+              <small>{{ view.module.workloadHours }}h{{ view.priceLabel ? ' · ' + view.priceLabel : '' }}</small>
+            </div>
+            @switch (view.state) {
+              @case ('enrolled') {
+                <ion-button size="small" (click)="continueModule(view.module.id)">Continuar</ion-button>
+              }
+              @case ('free') {
+                <ion-button
+                  size="small"
+                  [disabled]="enrollingModuleId() === view.module.id"
+                  (click)="enrollFree(view.module)"
+                >
+                  @if (enrollingModuleId() === view.module.id) {
+                    <ion-spinner name="crescent"></ion-spinner>
+                  } @else {
+                    Me Inscrever
+                  }
+                </ion-button>
+              }
+              @case ('paid') {
+                <ion-button size="small" (click)="openCheckout(view.module)">Comprar</ion-button>
+              }
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+      @if (!moduleViews().length && !courseTrackHasLessons()) {
+        <p class="empty">Este curso ainda não tem conteúdo publicado.</p>
+      }
+
+      <h2>Avaliações</h2>
+      @if (reviewsOverview(); as ov) {
+        <div class="review-summary">
+          <span class="rating-value">{{ ov.summary.count > 0 ? ov.summary.average : '—' }}</span>
+          <span class="stars" aria-hidden="true">
+            @for (i of stars(5); track i) {
+              <ion-icon [name]="i < ov.summary.average ? 'star' : 'star-outline'"></ion-icon>
+            }
+          </span>
+          <span class="count">{{ ov.summary.count }} avaliaç{{ ov.summary.count === 1 ? 'ão' : 'ões' }}</span>
+        </div>
+
+        @if (anyEnrolled() && reviewEligibility(); as elig) {
+          @if (!editingReview() && myReview(); as mine) {
+            <ion-card class="my-review">
+              <ion-card-content>
+                <div class="my-review-head">
+                  <strong>Sua avaliação</strong>
+                  <ion-badge [color]="reviewStatusColor(mine.status)">{{ reviewStatusLabel(mine.status) }}</ion-badge>
+                </div>
+                <div class="stars" aria-hidden="true">
+                  @for (i of stars(5); track i) {
+                    <ion-icon [name]="i < mine.rating ? 'star' : 'star-outline'"></ion-icon>
+                  }
+                </div>
+                @if (mine.comment) {
+                  <p class="comment">{{ mine.comment }}</p>
+                }
+                @if (mine.status === 'rejected' && mine.rejectionReason) {
+                  <p class="hint">Motivo: {{ mine.rejectionReason }}</p>
+                }
+                @if (mine.status === 'pending') {
+                  <p class="hint">Ela ficará visível para os outros alunos depois que o professor aprovar.</p>
+                }
+                <ion-button size="small" fill="outline" (click)="startEditReview()">Editar avaliação</ion-button>
+              </ion-card-content>
+            </ion-card>
+          } @else if (elig.eligible) {
+            <ion-card class="review-form">
+              <ion-card-content>
+                <strong>Avalie este curso</strong>
+                <div class="stars input">
+                  @for (i of stars(5); track i) {
+                    <button type="button" [attr.aria-label]="i + 1 + ' de 5 estrelas'" (click)="setRating(i + 1)">
+                      <ion-icon [name]="i < selectedRating() ? 'star' : 'star-outline'"></ion-icon>
+                    </button>
+                  }
+                </div>
+                <ion-textarea
+                  fill="outline"
+                  label="Comentário"
+                  labelPlacement="floating"
+                  placeholder="Conte como foi sua experiência com o curso"
+                  [rows]="4"
+                  [maxlength]="1000"
+                  [counter]="true"
+                  [value]="reviewComment()"
+                  (ionInput)="onCommentInput($event)"
+                ></ion-textarea>
+                <p class="hint">O comentário passa pela aprovação do professor antes de aparecer.</p>
+                @if (reviewError()) {
+                  <p class="error">{{ reviewError() }}</p>
+                }
+                <ion-button expand="block" [disabled]="savingReview() || !canSubmitReview()" (click)="submitReview()">
+                  @if (savingReview()) {
+                    <ion-spinner name="crescent"></ion-spinner>
+                  } @else {
+                    Enviar avaliação
+                  }
+                </ion-button>
+              </ion-card-content>
+            </ion-card>
+          } @else {
+            <p class="hint">
+              Conclua pelo menos {{ elig.threshold }}% do curso para avaliá-lo (você está em
+              {{ elig.percentage }}%).
+            </p>
+          }
+        }
+
+        @if (reviewSaved()) {
+          <p class="confirmed">Avaliação enviada! Ela ficará visível após a aprovação do professor.</p>
+        }
+
+        @if (ov.reviews.length > 0) {
+          @for (r of ov.reviews; track r.id) {
+            <div class="review-item">
+              <strong>{{ reviewerName(r) }}</strong>
+              <div class="stars" aria-hidden="true">
+                @for (i of stars(5); track i) {
+                  <ion-icon [name]="i < r.rating ? 'star' : 'star-outline'"></ion-icon>
+                }
+              </div>
+              @if (r.comment) {
+                <p class="comment">{{ r.comment }}</p>
+              }
+            </div>
+          }
+        } @else {
+          <p class="hint">Ainda não há avaliações aprovadas para este curso.</p>
+        }
+      }
+    </div>
+  }
+
+  <ion-modal [isOpen]="checkoutTarget() !== null" (didDismiss)="closeCheckout()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Pagamento</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeCheckout()">Fechar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        @if (!checkoutResult()) {
+          <ion-segment [value]="checkoutMethod()" (ionChange)="selectMethod($any($event.detail.value))">
+            <ion-segment-button value="pix">
+              <ion-label>Pix</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="boleto">
+              <ion-label>Boleto</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+
+          @if (checkoutError()) {
+            <p class="checkout-error">{{ checkoutError() }}</p>
+          }
+
+          <ion-button expand="block" class="ion-margin-top" [disabled]="checkoutLoading()" (click)="startCheckout()">
+            @if (checkoutLoading()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              Gerar cobrança
+            }
+          </ion-button>
+        } @else {
+          @if (paymentConfirmed()) {
+            <div class="confirmed">
+              <ion-icon name="checkmark-circle" color="success"></ion-icon>
+              <p>Pagamento confirmado!</p>
+              <ion-button expand="block" (click)="goToPurchased()">Ir para o conteúdo</ion-button>
+            </div>
+          } @else {
+            @if (checkoutMethod() === 'pix') {
+              <p class="hint">Escaneie o QR Code ou copie o código Pix:</p>
+              @if (checkoutResult()?.payment?.pixCopyPaste) {
+                <ion-card class="code-card" (click)="copy(checkoutResult()?.payment?.pixCopyPaste)">
+                  <ion-card-content>
+                    <code>{{ checkoutResult()?.payment?.pixCopyPaste }}</code>
+                    <ion-icon name="copy-outline"></ion-icon>
+                  </ion-card-content>
+                </ion-card>
+              }
+            } @else {
+              <p class="hint">Pague o boleto até o vencimento:</p>
+              @if (checkoutResult()?.payment?.boletoUrl) {
+                <ion-button expand="block" [href]="checkoutResult()?.payment?.boletoUrl" target="_blank">
+                  Abrir boleto
+                </ion-button>
+              }
+              @if (checkoutResult()?.payment?.boletoBarcode) {
+                <ion-card class="code-card" (click)="copy(checkoutResult()?.payment?.boletoBarcode)">
+                  <ion-card-content>
+                    <code>{{ checkoutResult()?.payment?.boletoBarcode }}</code>
+                    <ion-icon name="copy-outline"></ion-icon>
+                  </ion-card-content>
+                </ion-card>
+              }
+            }
+            <p class="waiting"><ion-spinner name="dots"></ion-spinner> Aguardando confirmação do pagamento…</p>
+          }
+        }
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

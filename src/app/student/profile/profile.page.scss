@@ -1,0 +1,26 @@
+.profile-header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+
+  ion-avatar {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ds-metal-pearl);
+    color: var(--ds-fg-2);
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+}
+
+.logout-wrap {
+  padding: 1.5rem 1rem;
+}

@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (authService.currentUser(); as user) {
+    <div class="profile-header">
+      <ion-avatar>
+        @if (user.avatarUrl) {
+          <img [src]="user.avatarUrl" alt="" />
+        } @else {
+          <span>{{ initial(user.name) }}</span>
+        }
+      </ion-avatar>
+      <h1>{{ user.name }}</h1>
+    </div>
+
+    <ion-list inset="true">
+      <ion-item>
+        <ion-icon slot="start" name="mail-outline"></ion-icon>
+        <ion-label>
+          <p>E-mail</p>
+          <h3>{{ user.email }}</h3>
+        </ion-label>
+      </ion-item>
+      @if (user.phone) {
+        <ion-item>
+          <ion-icon slot="start" name="call-outline"></ion-icon>
+          <ion-label>
+            <p>Telefone</p>
+            <h3>{{ user.phone }}</h3>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-list inset="true">
+    <ion-item>
+      <ion-icon slot="start" name="moon-outline"></ion-icon>
+      <ion-toggle [checked]="theme.isDark()" (ionChange)="theme.setDark($event.detail.checked)">Modo escuro</ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <div class="logout-wrap">
+    <ion-button expand="block" color="danger" fill="outline" (click)="logout()">
+      <ion-icon slot="start" name="log-out-outline"></ion-icon>
+      Sair
+    </ion-button>
+  </div>
+</ion-content>

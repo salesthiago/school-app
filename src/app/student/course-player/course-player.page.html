@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="'/student/cursos/' + courseId"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ module()?.title ?? course()?.title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleLessonList()">
+        <ion-icon slot="icon-only" name="list-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (currentLesson(); as lesson) {
+    @if (showLessonList()) {
+      <ion-list>
+        @for (l of lessons(); track l.id) {
+          <ion-item button [class.active]="currentLesson()?.id === l.id" (click)="selectLesson(l)">
+            @if (isLessonCompleted(l.id)) {
+              <ion-icon slot="start" name="checkmark-circle" color="success"></ion-icon>
+            } @else {
+              <ion-icon slot="start" name="document-text-outline"></ion-icon>
+            }
+            <ion-label>
+              <h3>{{ l.order + 1 }}. {{ l.title }}</h3>
+              <p>{{ formatDuration(l.video?.durationSeconds) }}</p>
+            </ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    } @else {
+      <div class="player-sticky">
+        <div class="video-wrap">
+          @if (videoUrl(); as url) {
+            <iframe
+              #videoIframe
+              [src]="url"
+              allow="autoplay; fullscreen; picture-in-picture"
+              loading="lazy"
+              (load)="attachPlayer(videoIframe)"
+            ></iframe>
+          } @else {
+            <div class="no-video">Vídeo ainda não disponível para esta aula.</div>
+          }
+        </div>
+
+        @if (progress(); as p) {
+          <ion-progress-bar [value]="p.percentage / 100"></ion-progress-bar>
+        }
+      </div>
+
+      <div class="lesson-header">
+        <div>
+          <span class="lesson-label">Aula {{ lesson.order + 1 }}</span>
+          <h1>{{ lesson.title }}</h1>
+        </div>
+        <ion-badge [color]="statusLabel() === 'Concluído' ? 'success' : 'medium'">{{ statusLabel() }}</ion-badge>
+      </div>
+
+      <div class="actions">
+        <ion-button expand="block" fill="outline" (click)="markWatched()">
+          <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+          Marcar como concluída
+        </ion-button>
+        <ion-button expand="block" [disabled]="!hasNextLesson()" (click)="nextLesson()">
+          Próxima aula
+          <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <ion-segment [value]="activeTab()" (ionChange)="setTab($any($event.detail.value))">
+        <ion-segment-button value="sobre">
+          <ion-label>Sobre</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="materiais">
+          <ion-label>Materiais</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <div class="tab-panel">
+        @switch (activeTab()) {
+          @case ('sobre') {
+            @if (lesson.description) {
+              <div class="description" [innerHTML]="safeHtml(lesson.description)"></div>
+            } @else {
+              <p class="hint">Sem descrição para esta aula.</p>
+            }
+            <p class="hint">Professor: {{ teacherName() }}</p>
+          }
+          @case ('materiais') {
+            @if (attachments().length === 0) {
+              <p class="hint">Nenhum material nesta aula.</p>
+            }
+            <ion-list>
+              @for (attachment of attachments(); track attachment.id) {
+                <ion-item button [href]="attachment.url" target="_blank" rel="noopener">
+                  <ion-icon slot="start" name="document-text-outline"></ion-icon>
+                  <ion-label>
+                    <h3>{{ attachment.fileName }}</h3>
+                    <p>{{ formatFileSize(attachment.sizeBytes) }}</p>
+                  </ion-label>
+                </ion-item>
+              }
+            </ion-list>
+          }
+        }
+      </div>
+    }
+  } @else {
+    <p class="hint ion-padding">Carregando aula...</p>
+  }
+</ion-content>

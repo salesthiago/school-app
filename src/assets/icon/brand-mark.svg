@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" role="img" aria-label="GPschool">
+  <path d="M20,150 L20,20 L180,20 L180,150" fill="none" stroke="#0b1830" stroke-width="16" stroke-linejoin="miter" stroke-linecap="square"/>
+  <rect x="90" y="35" width="20" height="110" fill="#0b1830"/>
+  <rect x="55" y="70" width="90" height="20" fill="#0b1830"/>
+  <path d="M15,205 L15,190 L45,155 L65,180 L100,145 L135,180 L155,155 L185,190 L185,205 Z" fill="#0b1830"/>
+</svg>
