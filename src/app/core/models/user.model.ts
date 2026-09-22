@@ -9,6 +9,8 @@ export interface User {
   institutionId?: string;
   avatarUrl?: string;
   bio?: string;
+  socialLinks?: { instagram?: string; twitter?: string };
+  passwordChangedAt?: string;
 }
 
 export interface AuthTokens {

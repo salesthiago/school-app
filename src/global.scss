@@ -36,10 +36,21 @@
 @import "@ionic/angular/css/palettes/dark.class.css";
 /* @import "@ionic/angular/css/palettes/dark.system.css"; */
 
-/* A logo é azul-marinho; no tema escuro ganha um fundo branco para continuar visível. */
-.ion-palette-dark .brand-mark {
-  background: #fff;
-  border-radius: 12px;
-  padding: 8px;
-  box-sizing: content-box;
+/* Duas versões da logo: escura no tema claro, clara no tema escuro. */
+.brand-logo {
+  display: block;
+
+  &.logo-dark {
+    display: none;
+  }
+}
+
+.ion-palette-dark .brand-logo {
+  &.logo-light {
+    display: none;
+  }
+
+  &.logo-dark {
+    display: block;
+  }
 }

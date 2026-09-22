@@ -12,6 +12,8 @@ export interface Course {
   title: string;
   description?: string;
   coverImageUrl?: string;
+  /** Versão leve (WebP ~480px) da capa, para listagens; ausente em capas antigas — use `?? coverImageUrl`. */
+  coverThumbUrl?: string;
   teacherId: string | { id: string; name: string };
   published: boolean;
   /** Preço da trilha de aulas avulsas do curso (aulas sem módulo). */
@@ -25,6 +27,7 @@ export interface CourseModule {
   title: string;
   description?: string;
   coverImageUrl?: string;
+  coverThumbUrl?: string;
   courseId: string;
   order: number;
   price: number;
@@ -70,6 +73,7 @@ export interface Enrollment {
   moduleId: CourseModule | string | null;
   courseId: Course | string;
   status: 'active' | 'revoked';
+  createdAt?: string;
 }
 
 export interface ModuleProgressSummary {

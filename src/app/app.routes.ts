@@ -35,6 +35,10 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'historico',
+        loadComponent: () => import('./student/history/history.page').then((m) => m.HistoryPage),
+      },
+      {
         path: 'cursos/:id',
         loadComponent: () =>
           import('./student/course-detail/course-detail.page').then((m) => m.CourseDetailPage),

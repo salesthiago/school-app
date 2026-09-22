@@ -1,0 +1,132 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/student/perfil"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Histórico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="load($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+    <div class="centered"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else {
+    <div class="stats">
+      <div class="stat">
+        <strong>{{ completedCount() }}</strong>
+        <span>Concluídos</span>
+      </div>
+      <div class="stat">
+        <strong>{{ inProgressCount() }}</strong>
+        <span>Em andamento</span>
+      </div>
+      <div class="stat">
+        <strong>{{ completedHours() }}h</strong>
+        <span>Horas</span>
+      </div>
+      <div class="stat">
+        <strong>{{ certificates().length }}</strong>
+        <span>Certificados</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Cursos e módulos</h2>
+      <ion-segment [value]="filter()" (ionChange)="setFilter($event.detail.value)">
+        <ion-segment-button value="all"><ion-label>Todos</ion-label></ion-segment-button>
+        <ion-segment-button value="in-progress"><ion-label>Andamento</ion-label></ion-segment-button>
+        <ion-segment-button value="completed"><ion-label>Concluídos</ion-label></ion-segment-button>
+      </ion-segment>
+
+      @for (item of visibleItems(); track item.key) {
+        <ion-card button (click)="openCourse(item)">
+          <ion-card-content class="entry">
+            <div class="entry-head">
+              <strong>{{ item.course.title }}</strong>
+              @if (item.completed) {
+                <span class="pill success">Concluído</span>
+              } @else {
+                <span class="pill info">{{ item.percentage }}%</span>
+              }
+            </div>
+            <small>
+              {{ item.subtitle }}
+              @if (item.enrolledAt) {
+                · Matrícula em {{ formatDate(item.enrolledAt) }}
+              }
+              @if (item.workloadHours > 0) {
+                · {{ item.workloadHours }}h
+              }
+            </small>
+            @if (!item.completed) {
+              <ion-progress-bar [value]="item.percentage / 100"></ion-progress-bar>
+            }
+          </ion-card-content>
+        </ion-card>
+      } @empty {
+        <div class="empty">
+          <p>
+            @if (items().length === 0) {
+              Você ainda não está matriculado em nenhum curso.
+            } @else {
+              Nenhum curso nesta situação.
+            }
+          </p>
+        </div>
+      }
+    </div>
+
+    <div class="section">
+      <h2>Certificados</h2>
+      @for (cert of certificates(); track cert.id) {
+        <ion-card>
+          <ion-card-content class="entry">
+            <div class="entry-head">
+              <strong>{{ cert.moduleTitle }}</strong>
+              <ion-icon name="ribbon-outline"></ion-icon>
+            </div>
+            <small>
+              Emitido em {{ formatDate(cert.issuedAt) }} · {{ cert.workloadHours }}h · Código {{ cert.code }}
+            </small>
+            <ion-button size="small" fill="outline" [disabled]="downloadingId() === cert.id" (click)="download(cert)">
+              @if (downloadingId() === cert.id) {
+                <ion-spinner name="crescent"></ion-spinner>
+              } @else {
+                Baixar PDF
+              }
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      } @empty {
+        <div class="empty"><p>Você ainda não possui certificados emitidos.</p></div>
+      }
+    </div>
+
+    <div class="section">
+      <h2>Pagamentos</h2>
+      @for (payment of payments(); track payment.id) {
+        <ion-card>
+          <ion-card-content class="entry">
+            <div class="entry-head">
+              <strong>{{ payment.title }}</strong>
+              <span class="amount">{{ formatCurrency(payment.amount) }}</span>
+            </div>
+            @if (payment.subtitle) {
+              <small>{{ payment.subtitle }}</small>
+            }
+            <div class="entry-head">
+              <small>{{ formatDate(payment.date) }} · {{ payment.methodLabel }}</small>
+              <span class="pill" [ngClass]="payment.statusColor">{{ payment.statusLabel }}</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      } @empty {
+        <div class="empty"><p>Nenhum pagamento registrado.</p></div>
+      }
+    </div>
+  }
+</ion-content>

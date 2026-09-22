@@ -7,34 +7,152 @@
 <ion-content>
   @if (authService.currentUser(); as user) {
     <div class="profile-header">
-      <ion-avatar>
-        @if (user.avatarUrl) {
-          <img [src]="user.avatarUrl" alt="" />
-        } @else {
-          <span>{{ initial(user.name) }}</span>
-        }
-      </ion-avatar>
+      <div class="avatar-wrap">
+        <ion-avatar>
+          @if (user.avatarUrl) {
+            <img [src]="user.avatarUrl" alt="Foto de perfil" />
+          } @else {
+            <span>{{ initial(user.name) }}</span>
+          }
+          @if (uploadingAvatar()) {
+            <div class="avatar-loading"><ion-spinner name="crescent"></ion-spinner></div>
+          }
+        </ion-avatar>
+        <label class="avatar-edit" aria-label="Trocar foto de perfil">
+          <ion-icon name="camera-outline"></ion-icon>
+          <input type="file" accept="image/*" hidden [disabled]="uploadingAvatar()" (change)="onAvatarSelected($event)" />
+        </label>
+      </div>
       <h1>{{ user.name }}</h1>
+      <p class="email">{{ user.email }}</p>
     </div>
 
-    <ion-list inset="true">
-      <ion-item>
-        <ion-icon slot="start" name="mail-outline"></ion-icon>
-        <ion-label>
-          <p>E-mail</p>
-          <h3>{{ user.email }}</h3>
-        </ion-label>
-      </ion-item>
-      @if (user.phone) {
+    @if (profileMessage(); as msg) {
+      <p class="msg" [class.error]="msg.kind === 'error'" [class.success]="msg.kind === 'success'">{{ msg.text }}</p>
+    }
+
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <ion-list inset="true">
+        <ion-item>
+          <ion-input label="Nome" labelPlacement="stacked" formControlName="name" autocomplete="name"></ion-input>
+        </ion-item>
         <ion-item>
           <ion-icon slot="start" name="call-outline"></ion-icon>
-          <ion-label>
-            <p>Telefone</p>
-            <h3>{{ user.phone }}</h3>
-          </ion-label>
+          <ion-input
+            label="Telefone"
+            labelPlacement="stacked"
+            type="tel"
+            formControlName="phone"
+            autocomplete="tel"
+          ></ion-input>
         </ion-item>
-      }
+        <ion-item>
+          <ion-icon slot="start" name="logo-instagram"></ion-icon>
+          <ion-input
+            label="Instagram"
+            labelPlacement="stacked"
+            placeholder="@usuario"
+            formControlName="instagram"
+            autocapitalize="off"
+            maxlength="100"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="logo-twitter"></ion-icon>
+          <ion-input
+            label="X (antigo Twitter)"
+            labelPlacement="stacked"
+            placeholder="@usuario"
+            formControlName="twitter"
+            autocapitalize="off"
+            maxlength="100"
+          ></ion-input>
+        </ion-item>
+      </ion-list>
+
+      <div class="actions">
+        <ion-button expand="block" type="submit" [disabled]="profileForm.invalid || profileForm.pristine || savingProfile()">
+          @if (savingProfile()) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            Salvar alterações
+          }
+        </ion-button>
+      </div>
+    </form>
+
+    <ion-list inset="true">
+      <ion-item button detail="true" routerLink="/student/historico">
+        <ion-icon slot="start" name="time-outline"></ion-icon>
+        <ion-label>Histórico</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+        <ion-label>
+          <h3>Senha</h3>
+          <p>{{ passwordChangedLabel() }}</p>
+        </ion-label>
+        @if (!changingPassword()) {
+          <ion-button slot="end" fill="clear" size="small" (click)="openPasswordForm()">Trocar</ion-button>
+        }
+      </ion-item>
     </ion-list>
+
+    @if (changingPassword()) {
+      <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
+        <ion-list inset="true">
+          <ion-item>
+            <ion-input
+              label="Senha atual"
+              labelPlacement="stacked"
+              type="password"
+              formControlName="currentPassword"
+              autocomplete="current-password"
+            >
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              label="Nova senha"
+              labelPlacement="stacked"
+              type="password"
+              helperText="Mínimo de 8 caracteres"
+              formControlName="newPassword"
+              autocomplete="new-password"
+            >
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              label="Confirmar nova senha"
+              labelPlacement="stacked"
+              type="password"
+              formControlName="confirmPassword"
+              autocomplete="new-password"
+            >
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+        </ion-list>
+
+        @if (passwordMessage(); as msg) {
+          <p class="msg" [class.error]="msg.kind === 'error'">{{ msg.text }}</p>
+        }
+
+        <div class="actions row">
+          <ion-button fill="outline" (click)="closePasswordForm()" [disabled]="savingPassword()">Cancelar</ion-button>
+          <ion-button type="submit" [disabled]="passwordForm.invalid || savingPassword()">
+            @if (savingPassword()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              Alterar senha
+            }
+          </ion-button>
+        </div>
+      </form>
+    }
   }
 
   <ion-list inset="true">

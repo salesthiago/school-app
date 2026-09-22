@@ -7,6 +7,8 @@ export interface UpdateProfilePayload {
   name?: string;
   phone?: string;
   bio?: string;
+  instagram?: string;
+  twitter?: string;
 }
 
 export interface ChangePasswordPayload {

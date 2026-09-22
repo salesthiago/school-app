@@ -16,7 +16,11 @@
         <ion-card button (click)="open(view)">
           <ion-card-content class="row">
             <ion-avatar [style.background]="'#5b6bf5'">
-              <span>{{ initial(view.course.title) }}</span>
+              @if (view.course.coverThumbUrl ?? view.course.coverImageUrl; as cover) {
+                <img [src]="cover" alt="" loading="lazy" decoding="async" />
+              } @else {
+                <span>{{ initial(view.course.title) }}</span>
+              }
             </ion-avatar>
             <div class="info">
               <strong>{{ view.course.title }}</strong>
@@ -36,7 +40,11 @@
         <ion-card button (click)="open(view)">
           <ion-card-content class="row">
             <ion-avatar [style.background]="'#26a69a'">
-              <span>{{ initial(view.course.title) }}</span>
+              @if (view.course.coverThumbUrl ?? view.course.coverImageUrl; as cover) {
+                <img [src]="cover" alt="" loading="lazy" decoding="async" />
+              } @else {
+                <span>{{ initial(view.course.title) }}</span>
+              }
             </ion-avatar>
             <div class="info">
               <strong>{{ view.course.title }}</strong>
